@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+
+{% block title %}Loader{% endblock %}
+
+{% block content %}
+
+    {% if file_uploaded %}
+        <p>{{ database_response }}</p>
+
+    {% else %}
+        <form enctype="multipart/form-data" method="post" action="loader">
+            {{ upload_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Загрузить файл"></p>
+        </form>
+    {% endif %}
+
+{% endblock %}

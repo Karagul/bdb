@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html5>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href='{% static "css/bdb_layout.css" %}' rel="stylesheet">
+</head>
+
+<body>
+<div class="main">
+
+    <div id="image-times">
+	    <a href="/bonds/"><img src='{% static "images/times_small.jpg" %}' alt=""></a>
+
+    </div>
+
+    <div class="header">
+        <p>Bonds Database<p>
+    </div>
+
+    <div id="left">
+        <div class="content">
+                {% block content %}
+                {% endblock %}
+
+        </div>
+    </div>
+
+    <div id="right">
+        <div class="menu">
+            <p>Список</p>
+            <p>О сайте</p>
+            <p>Контакты</p>
+        </div>
+
+        <div class="sidebar">
+		        <p><a href="login">Логин</a></p>
+                <p><a href="search">Поиск</a></p>
+                {% if request.user.is_authenticated %}
+                <p><a href="loader">Загрузить</a></p>
+                <p><a href="logout">Выйти</a></p>
+                {% endif %}
+                <p>Тэги</p>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

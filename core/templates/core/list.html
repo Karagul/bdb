@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+
+{% block title %}Bonds list{% endblock %}
+
+{% block content %}
+    <table>
+        <tr><td>Выпуск</td><td>Компания</td><td>Код</td><td>Дата погашения</td><td>Купон</td><td>Валюта</td>
+            </tr>
+    {% for rec in records %}
+        <tr>
+        <td><a href="{{ rec.get_absolute_url }}">{{ rec.ISIN }}</a></td>
+        <td>{{ rec.IssuerCompany }}</td>
+        <td>{{ rec.Ticker }}</td>
+        <td>{{ rec.Maturity }}</td>
+        <td>{{ rec.Coupon }}</td>
+        <td>{{ rec.Currency }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    {% include "pagination.html" with page=records %}
+{% endblock %}

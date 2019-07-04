@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+    {% if search_done %}
+        <h3>Результаты поиска</h3>
+        <form action="search" method="post">
+            {{ search_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Искать"></p>
+        </form>
+
+        <table>
+                <tr><td>Выпуск</td><td>Компания</td><td>Код</td><td>Дата погашения</td><td>Купон</td><td>Валюта</td>
+                    </tr>
+        {% for res in search_results %}
+		<tr>
+                <td><a href="{{ res.get_absolute_url }}">{{ res.ISIN }}</a></td>
+                <td>{{ res.IssuerCompany }}</td>
+                <td>{{ res.Ticker }}</td>
+                <td>{{ res.Maturity }}</td>
+                <td>{{ res.Coupon }}</td>
+                <td>{{ res.Currency }}</td>
+                </tr>
+
+        {% empty %}
+        <h3>Не найдено</h3>
+        {% endfor %}
+	 </table>
+
+    {% else %}
+        <h3>Поиск</h3>
+        <form action="search" method="post">
+            {{ search_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Искать"></p>
+            </form>
+    {% endif %}
+
+{% endblock %}
