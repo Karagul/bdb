@@ -1,50 +1,89 @@
 {% load static %}
 <!DOCTYPE html5>
-<html>
+<html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link href='{% static "css/bdb_layout.css" %}' rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href='{% static "css/bdb-layout.css" %}'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>  
 </head>
 
 <body>
-<div class="main">
 
-    <div id="image-times">
-	    <a href="/bonds/"><img src='{% static "images/times_small.jpg" %}' alt=""></a>
-
-    </div>
-
-    <div class="header">
-        <p>Bonds Database<p>
-    </div>
-
-    <div id="left">
-        <div class="content">
-                {% block content %}
-                {% endblock %}
-
+    <div class="container border teal teal-header">
+        <div class="row">
+            <div class="col-4 logo-padding">
+                <a href="/"><img src='{% static "images/times_small.jpg" %}' alt=""></a>
+            </div>
+            <div class="col">
+                <h1>Bonds database</h1>
+                <p>Ваш проводник в мире долгового инвестирования</p>
+            </div>
         </div>
     </div>
-
-    <div id="right">
-        <div class="menu">
-            <p>Список</p>
-            <p>О сайте</p>
-            <p>Контакты</p>
-        </div>
-
-        <div class="sidebar">
-		        <p><a href="login">Логин</a></p>
-                <p><a href="search">Поиск</a></p>
-                {% if request.user.is_authenticated %}
-                <p><a href="loader">Загрузить</a></p>
-                <p><a href="logout">Выйти</a></p>
-                {% endif %}
-                <p>Тэги</p>
+    
+    <div class="container border">
+        <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link" href="/">Список</a></li>
+            <li class="nav-item"><a class="nav-link" href="search">Поиск</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Новости</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Статьи</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">О сайте</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Контакты</a></li>
+        </ul>
         </div>
     </div>
-
-
-</div>
+    
+    <div class="container border min-vh-70">
+    <hr>
+        <div class="row container">
+            <div class="col-10">
+                
+                <p> {% block content %}
+                    {% endblock %}</p>
+                
+            </div>
+            <div class="col-2 text-primary container">
+                <div class="row container">
+                    <p><a href="login">Авторизация</a></p>
+                </div>
+                <div class="container row">
+                    {% if request.user.is_authenticated %}
+                    <p><a href="loader">Загрузить</a></p>
+                    <p><a href="logout">Выйти</a></p>
+                    {% endif %}
+                </div>
+                <div class="row container">
+                    Баннер
+                </div>
+            </div>
+        
+        </div>
+    <hr>
+    </div> 
+    
+    <div class="container border">
+        <div class="row teal">
+            <div class="col-4">
+                Текст футера и дисклеймер
+            </div>
+            <div class="col text-right">
+                <small>
+                    <ul class="nav flex-column">
+                        <li>Контакты</li>
+                        <li>Контакты</li>
+                        <li>Контакты</li>
+                    </ul>
+                </small>
+            </div>
+        </div>
+    </div>
+             
 </body>
+
 </html>

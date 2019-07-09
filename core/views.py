@@ -9,7 +9,7 @@ from .models import BondIssue, Country, Currency, Comment
 def bonds_list(request):
     records = BondIssue.active.all()
 
-    paginator = Paginator(records, 50) # 50 записей на странице
+    paginator = Paginator(records, 5) # 5 записей на странице
     page = request.GET.get('page')
     try:
         records = paginator.page(page)
@@ -50,16 +50,26 @@ def bonds_search(request):
             search_done = True
             search_results = BondIssue.active.filter(IssuerCompany__icontains=search_form.cleaned_data['search_string'])
 
-    #elif request.method == 'GET' and search_done: # Следующие страницы выдачи поиска
-
+            paginator = Paginator(search_results, 5) # 5 записей на странице
+            page = request.GET.get('page')
+            try:
+                search_results = paginator.page(page)
+            except PageNotAnInteger:
+                search_results = paginator.page(1)
+            except EmptyPage:
+                search_results = paginator.page(paginator.num_pages)
+    
+    # if request.method == 'GET': # 2я и последующие страницы выдачи поиска
+    #     pass
 
     else: # Перед запуском поиска
         search_form = SearchForm()
-        search_done = search_results = None
+        search_done = search_results = page = None
 
     return render(request, 'core/search.html', {'search_form': search_form,
                                                 'search_done': search_done,
                                                 'search_results': search_results,
+                                                'page': page,
                                                 })
 
 
@@ -114,18 +124,21 @@ def handle_uploaded_file(fh):
     with open('temporary_upload.csv', 'wb+') as destination:
         for chunk in fh.chunks():
             destination.write(chunk)
-
+    date_transform = lambda x: '-'.join(x.split('.')[::-1])
+    float_transform = lambda x: 0 if not x else float(x)
+    
     # Обработка csv и загрузка в базу
     infile = open('temporary_upload.csv','r')
-    outfile = open('loader_log.txt', 'w')
+    # outfile = open('loader_log.txt', 'w')
     for line in infile:
         data = line.strip().split(";")
+        
         # try:
-        BondIssue.objects.create(ISIN=data[0],
+        new_record = BondIssue( ISIN=data[0],
                                 IssuerCompany=data[1],
                                 Ticker=data[2],
                                 Coupon=data[3],
-                                Maturity='2021-05-19',
+                                Maturity=date_transform(data[4]), 
                                 MaturityType=data[5],
                                 Currency=Currency.objects.get(abbr=data[6]),
                                 Source=data[7],
@@ -133,23 +146,26 @@ def handle_uploaded_file(fh):
                                 Sp=data[9],
                                 Fitch=data[10],
                                 BloombergCompositeRating=data[11],
-                                Announce='2006-05-19',
+                                Announce=date_transform(data[12]),
                                 CollateralType=data[13],
                                 Country=Country.objects.get(abbr=data[14]),
-                                IssueDate='2007-05-19',
+                                IssueDate=date_transform(data[15]),
                                 OutstandingAmount =data[16],
                                 IssuedAmount=data[17],
                                 Underwriter=data[18],
                                 MinimumPiece=data[19],
-                                BidPrice=0,
-                                BidYTM=0,
-                                BidMDuration=0,
+                                BidPrice=float_transform(data[20]),
+                                BidYTM=float_transform(data[21]),
+                                BidMDuration=float_transform(data[22]),
                                 Archived=False
                             )
-        # except BaseException:
-        #     print("Не удалось загрузить строку {0} из {1} элементов".format(data, len(data)), file=outfile)
+        new_record.save()
+        # except Exception:
+        #   print("...", file=outfile)
+        #    return False
 
     infile.close()
-    outfile.close()
+    # Удалить временный
+    # outfile.close()
 
     return True

@@ -3,17 +3,17 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <h1>Логин</h1>
+    <h5>Логин</h5>
     {% if logged_status %}
         <p>{{ logged_status}}</p>
     {% else %}
-        <p>Обозначьте себя как положено:</p>
+        <p>Обозначьте себя как положено</p>
     {% endif %}
 
     <form action="login" method="post">
     {{ form.as_p }}
     {% csrf_token %}
-    <p><input type="submit" value="Так точно"></p>
+    <p><input class="btn btn-info" type="submit" value="Так точно"></p>
     </form>
 
 {% endblock %}

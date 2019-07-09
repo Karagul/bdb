@@ -3,8 +3,8 @@
 {% block title %}{{ record.ISIN }}{% endblock %}
 
 {% block content %}
-    <h4>Данные о выпуске</h4> <!-- Отображаем информацию о выпуске -->
-    <table>
+    <h5>Данные о выпуске</h5> <!-- Отображаем информацию о выпуске -->
+    <table class="table table-striped table-bordered">
         <tr><td>ISIN</td><td>{{ record.ISIN }}</td></tr>
         <tr><td>Company</td><td>{{ record.IssuerCompany}}</td></tr>
         <tr><td>Country</td><td>{{ record.Country }}</td></tr>
@@ -17,30 +17,30 @@
         <tr><td>Moody's rating</td><td>{{ record.Moody }}</td></tr>
         <tr><td>S&P rating</td><td>{{ record.Sp }}</td></tr>
         <tr><td>Fitch rating</td><td>{{ record.Fitch }}</td></tr>
-
     </table>
 
-
-    {% with comments.count as total_comments %}
-        <h3>
-            {{ total_comments }} comment{{ total_comments|pluralize }}
-        </h3>
-    {% endwith %}
-
+    
+    <hr>
+    <div class="container">
+        <p>Дополнительная информация</p>
+    </div>
+    
+    <hr>
+    <div class="container pt-3">
     {% for comment in comments %} <!-- Отображаем комментарии -->
-        <div class="comment">
-            <p class="info">
-                Комментарий {{ forloop.counter }} оставлен {{ comment.name }}
-                {{ comment.created }}
+        <div class="">
+            <p class="font-weight-bold">
+                Комментарий {{ comment.name }} оставлен {{ comment.created }}
             </p>
             {{ comment.body|linebreaks }}
         </div>
     {% empty %}
-        <p>Комментариев нет.</p>
+        <p>Комментариев нет</p>
     {% endfor %}
+    <hr>
 
     {% if new_comment %}
-        <h3>Комментарий добавлен</h3>
+        <mark>Комментарий добавлен</mark>
         <form action="{{ record.ISIN }}" method="post">
                 {{ comment_form.as_p }}
                 {% csrf_token %}
@@ -49,13 +49,14 @@
         </form>
 
     {% else %}
-        <h3>Добавить комментарий</h3>
-        <form action="{{ record.ISIN }}" method="post">
+        <strong>Добавить комментарий</strong>
+        <form class="" action="{{ record.ISIN }}" method="post">
             {{ comment_form.as_p }}
             {% csrf_token %}
-            <p><input type="submit" value="Запостить"></p>
+            <p><input class="btn btn-info" type="submit" value="Запостить"></p>
 
         </form>
     {% endif %}
-
+    </div>
+    
 {% endblock %}

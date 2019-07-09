@@ -47,8 +47,8 @@ class BondIssue(models.Model):
     Country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
     IssueDate = models.DateField(blank=True)
-    OutstandingAmount = models.PositiveIntegerField(blank=True)
-    IssuedAmount = models.PositiveIntegerField(blank=True)
+    OutstandingAmount = models.BigIntegerField(blank=True)
+    IssuedAmount = models.BigIntegerField(blank=True)
     Underwriter = models.CharField(max_length=20, blank=True)
     MinimumPiece = models.PositiveIntegerField(blank=True)
     BidPrice = models.DecimalField(max_digits=6, decimal_places=3, blank=True)

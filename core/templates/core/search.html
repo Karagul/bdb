@@ -5,14 +5,14 @@
 {% block content %}
 
     {% if search_done %}
-        <h3>Результаты поиска</h3>
+        <h5>Результаты поиска</h5>
         <form action="search" method="post">
             {{ search_form.as_p }}
             {% csrf_token %}
             <p><input type="submit" value="Искать"></p>
         </form>
 
-        <table>
+        <table class="table table-striped table-bordered table-info">
                 <tr><td>Выпуск</td><td>Компания</td><td>Код</td><td>Дата погашения</td><td>Купон</td><td>Валюта</td>
                     </tr>
         {% for res in search_results %}
@@ -26,16 +26,17 @@
                 </tr>
 
         {% empty %}
-        <h3>Не найдено</h3>
+        <h5>Не найдено</h5>
         {% endfor %}
 	 </table>
-
+     {% include "pagination.html" with page=search_results %}
+     
     {% else %}
-        <h3>Поиск</h3>
+        <h5>Поиск</h5>
         <form action="search" method="post">
             {{ search_form.as_p }}
             {% csrf_token %}
-            <p><input type="submit" value="Искать"></p>
+            <p><input class="btn btn-info" type="submit" value="Искать"></p>
             </form>
     {% endif %}
 
