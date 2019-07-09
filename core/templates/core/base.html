@@ -35,33 +35,25 @@
             <li class="nav-item"><a class="nav-link" href="#">Статьи</a></li>
             <li class="nav-item"><a class="nav-link" href="#">О сайте</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Контакты</a></li>
+            <li class="nav-item"><a class="nav-link" href="login">Авторизация</a></li>
+            {% if request.user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="loader">Загрузить</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin/logout">Выйти</a></li>
+            {% endif %}
         </ul>
         </div>
     </div>
     
-    <div class="container border min-vh-70">
+    <div class="container border">
     <hr>
         <div class="row container">
-            <div class="col-10">
+            <div class="col-12">
                 
                 <p> {% block content %}
                     {% endblock %}</p>
                 
             </div>
-            <div class="col-2 text-primary container">
-                <div class="row container">
-                    <p><a href="login">Авторизация</a></p>
-                </div>
-                <div class="container row">
-                    {% if request.user.is_authenticated %}
-                    <p><a href="loader">Загрузить</a></p>
-                    <p><a href="logout">Выйти</a></p>
-                    {% endif %}
-                </div>
-                <div class="row container">
-                    Баннер
-                </div>
-            </div>
+            
         
         </div>
     <hr>
@@ -69,8 +61,10 @@
     
     <div class="container border">
         <div class="row teal">
-            <div class="col-4">
-                Текст футера и дисклеймер
+            <div class="col-5">
+                <p class="text-justify" style="font-size: 14;">
+                    Опубликованная на сайте информация предназначена для ознакомительных целей и не является ни инвестиционной рекомендацией, ни офертой какого-либо рода.
+                </p>
             </div>
             <div class="col text-right">
                 <small>

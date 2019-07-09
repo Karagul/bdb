@@ -1,10 +1,12 @@
 
 {% if page.has_previous %}
-    <a href="?page={{ page.previous_page_number }}">Предыдущие выпуски</a>
+    <a href="?page={{ page.previous_page_number }}&search_string={{ search_string }}&ordered_by={{ ordered_by }}&descending={{ descending }}">Предыдущие выпуски</a>
+    {% csrf_token %}
 {% endif %}
 
 Страница {{ page.number }} из {{ page.paginator.num_pages }}.
 
 {% if page.has_next %}
-    <a href="?page={{ page.next_page_number }}">Следующие выпуски</a>
+    <a href="?page={{ page.next_page_number }}&search_string={{ search_string }}&ordered_by={{ ordered_by }}&descending={{ descending }}">Следующие выпуски</a>
+    {% csrf_token %}
 {% endif %}

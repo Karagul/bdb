@@ -3,17 +3,19 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <h5>Логин</h5>
+    <h5>Авторизация</h5>
     {% if logged_status %}
-        <p>{{ logged_status}}</p>
+        <p class="alert alert-info">{{ logged_status}}</p>
     {% else %}
-        <p>Обозначьте себя как положено</p>
+        <p>Введите логин и пароль</p>
     {% endif %}
 
     <form action="login" method="post">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <p><input class="btn btn-info" type="submit" value="Так точно"></p>
+    <table>
+        {{ form.as_table }}
+        {% csrf_token %}
+    </table>
+    <p><input class="btn btn-info" type="submit" value="Вход"></p>
     </form>
 
 {% endblock %}

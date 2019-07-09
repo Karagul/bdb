@@ -1,0 +1,14 @@
+{
+	"folders": [
+        {
+            "path": "core"
+        },
+        {
+            "path": "bond_db"
+        }
+    ],
+    "settings": {
+        "telemetry.enableCrashReporter": false,
+        "telemetry.enableTelemetry": false
+    }
+}

@@ -9,7 +9,7 @@
 
     {% else %}
         <form enctype="multipart/form-data" method="post" action="loader">
-            {{ upload_form.as_p }}
+            {{ upload_form.as_table }}
             {% csrf_token %}
             <p><input type="submit" value="Загрузить файл"></p>
         </form>

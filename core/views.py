@@ -6,10 +6,13 @@ from .forms import CommentForm, SearchForm, LoginForm, UploadForm
 from .models import BondIssue, Country, Currency, Comment
 
 
+RECORDS_ON_PAGE = 6
+
+
 def bonds_list(request):
     records = BondIssue.active.all()
 
-    paginator = Paginator(records, 5) # 5 записей на странице
+    paginator = Paginator(records, RECORDS_ON_PAGE) # Число записей на странице
     page = request.GET.get('page')
     try:
         records = paginator.page(page)
@@ -43,33 +46,39 @@ def bonds_detail(request, isin):
                                                 'comment_form': comment_form })
 
 def bonds_search(request):
-
-    if request.method == 'POST': # Первая страница выдачи поиска
-        search_form = SearchForm(data=request.POST)
-        if search_form.is_valid():
-            search_done = True
-            search_results = BondIssue.active.filter(IssuerCompany__icontains=search_form.cleaned_data['search_string'])
-
-            paginator = Paginator(search_results, 5) # 5 записей на странице
-            page = request.GET.get('page')
-            try:
-                search_results = paginator.page(page)
-            except PageNotAnInteger:
-                search_results = paginator.page(1)
-            except EmptyPage:
-                search_results = paginator.page(paginator.num_pages)
+    search_string = request.GET.get('search_string')
+    ordered_by = request.GET.get('ordered_by')
+    descending = request.GET.get('descending')
     
-    # if request.method == 'GET': # 2я и последующие страницы выдачи поиска
-    #     pass
+    if search_string:
+        
+        search_results = BondIssue.active.filter(
+            IssuerCompany__icontains=search_string).order_by('-'*int(descending=='on') + ordered_by)
+        search_form = SearchForm()
 
-    else: # Перед запуском поиска
+        paginator = Paginator(search_results, RECORDS_ON_PAGE) # Число записей на странице
+        page = request.GET.get('page')
+        try:
+            search_results = paginator.page(page)
+        except PageNotAnInteger:
+            search_results = paginator.page(1)
+        except EmptyPage:
+            search_results = paginator.page(paginator.num_pages)
+        search_done = True    
+        
+
+    else: # Если поиск не запускался
         search_form = SearchForm()
         search_done = search_results = page = None
+        search_string = None
 
     return render(request, 'core/search.html', {'search_form': search_form,
+                                                'search_string': search_string,
                                                 'search_done': search_done,
                                                 'search_results': search_results,
                                                 'page': page,
+                                                'ordered_by': ordered_by,
+                                                'descending': descending,
                                                 })
 
 
@@ -130,6 +139,7 @@ def handle_uploaded_file(fh):
     # Обработка csv и загрузка в базу
     infile = open('temporary_upload.csv','r')
     # outfile = open('loader_log.txt', 'w')
+    
     for line in infile:
         data = line.strip().split(";")
         
