@@ -3,16 +3,22 @@
 {% block title %}Loader{% endblock %}
 
 {% block content %}
+    
+    {% if request.user.is_superuser %}
+    
+        {% if file_uploaded %}
+            <p>{{ database_response }}</p>
 
-    {% if file_uploaded %}
-        <p>{{ database_response }}</p>
-
+        {% else %}
+            <form enctype="multipart/form-data" method="post" action="loader">
+                {{ upload_form.as_table }}
+                {% csrf_token %}
+                <p><input type="submit" value="Загрузить файл"></p>
+            </form>
+        {% endif %}
+    
     {% else %}
-        <form enctype="multipart/form-data" method="post" action="loader">
-            {{ upload_form.as_table }}
-            {% csrf_token %}
-            <p><input type="submit" value="Загрузить файл"></p>
-        </form>
+    <p>Недостаточно прав для просмотра страницы.</p>
     {% endif %}
-
+    
 {% endblock %}

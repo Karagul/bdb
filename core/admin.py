@@ -9,7 +9,7 @@ class CountryAdmin(admin.ModelAdmin):
     ordering = ('abbr', 'name')
 
 @admin.register(Currency)
-class CountryAdmin(admin.ModelAdmin):
+class CurrencyAdmin(admin.ModelAdmin):
     list_display = ('abbr', 'name', 'country')
     list_filter = ('abbr', 'name', 'country')
     search_fields = ('abbr', 'name')

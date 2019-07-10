@@ -35,10 +35,13 @@
             <li class="nav-item"><a class="nav-link" href="#">Статьи</a></li>
             <li class="nav-item"><a class="nav-link" href="#">О сайте</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Контакты</a></li>
-            <li class="nav-item"><a class="nav-link" href="login">Авторизация</a></li>
-            {% if request.user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="loader">Загрузить</a></li>
-            <li class="nav-item"><a class="nav-link" href="admin/logout">Выйти</a></li>
+            {% if not request.user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="login">Авторизация</a></li>
+            {% else %}
+                {% if request.user.is_superuser %}
+                    <li class="nav-item"><a class="nav-link" href="loader">Загрузить данные</a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="logout"><span class="badge badge-info">{{ request.user.username}}</span>Выйти</a></li>
             {% endif %}
         </ul>
         </div>

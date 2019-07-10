@@ -1,12 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from .forms import CommentForm, SearchForm, LoginForm, UploadForm
 from .models import BondIssue, Country, Currency, Comment
 
 
-RECORDS_ON_PAGE = 6
+RECORDS_ON_PAGE = 6 
 
 
 def bonds_list(request):
@@ -33,6 +33,7 @@ def bonds_detail(request, isin):
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
+            # Добавить привязку к user, чтобы не приходилось вводить имя
             new_comment = comment_form.save(commit=False)
             new_comment.record = record
             new_comment.save()
@@ -107,7 +108,8 @@ def user_login(request):
     return render(request, 'core/login.html', {'form': form, 'logged_status': logged_status})
 
 def user_logout(request):
-    return HttpResponse("Здесь будет лог аут")
+    logout(request)
+    return redirect('/')
 
 
 def data_loader(request):

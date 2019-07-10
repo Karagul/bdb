@@ -39,24 +39,33 @@
     {% endfor %}
     <hr>
 
-    {% if new_comment %}
-        <mark>Комментарий добавлен</mark>
-        <form action="{{ record.ISIN }}" method="post">
-                {{ comment_form.as_p }}
+    {% if request.user.is_authenticated %}    
+        {% if new_comment %}
+            <div class="alert alert-success">Комментарий добавлен</div>
+            <form action="{{ record.ISIN }}" method="post">
+                <table>
+                    {{ comment_form.as_table }}
+                    {% csrf_token %}
+                </table>
+                <p><input class="btn btn-info" type="submit" value="Запостить"></p>
+            </form>
+
+        {% else %}
+            <strong>Добавить комментарий</strong>
+            <form class="" action="{{ record.ISIN }}" method="post">
+                <table>
+                {{ comment_form.as_table }}
                 {% csrf_token %}
-                <p><input type="submit" value="Запостить"></p>
-
-        </form>
-
+                </table>
+                <p><input class="btn btn-info" type="submit" value="Запостить"></p>
+            </form>
+        {% endif %}
+        </div>
+    
     {% else %}
-        <strong>Добавить комментарий</strong>
-        <form class="" action="{{ record.ISIN }}" method="post">
-            {{ comment_form.as_p }}
-            {% csrf_token %}
-            <p><input class="btn btn-info" type="submit" value="Запостить"></p>
-
-        </form>
+    Для добавления коментариев необходима авторизация.
+    </div>    
+    
     {% endif %}
-    </div>
     
 {% endblock %}
