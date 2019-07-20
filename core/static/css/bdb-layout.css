@@ -10,3 +10,7 @@
 div.logo-padding {
     padding: 3px 3px 3px 3px;
 }
+
+a {
+	color: rgb(0, 0, 210);
+}

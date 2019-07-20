@@ -24,7 +24,7 @@ class SearchForm(forms.Form):
     search_string = forms.CharField(max_length=25, required=True, label='Слово')
     # Добавить поля поиска
     ordered_by = forms.ChoiceField(choices=ORDER_CHOICES, required=False, label='Сортировать по')
-    descending = forms.BooleanField(initial=True, required=True, label='По убыванию')
+    descending = forms.BooleanField(initial=True, required=False, label='По убыванию')
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Имя')

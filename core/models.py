@@ -7,8 +7,8 @@ class ActiveManager(models.Manager):
         return super(ActiveManager, self).get_queryset().filter(Archived=False)
 
 class Country(models.Model):
-    abbr = models.CharField(max_length=3, primary_key=True)
-    name = models.CharField(max_length=20)
+    abbr = models.CharField(max_length=4, primary_key=True)
+    name = models.CharField(max_length=100)
     class Meta:
         ordering = ('abbr',)
     def __str__(self):
@@ -51,7 +51,7 @@ class BondIssue(models.Model):
     IssuedAmount = models.BigIntegerField(blank=True)
     Underwriter = models.CharField(max_length=20, blank=True)
     MinimumPiece = models.PositiveIntegerField(blank=True)
-    BidPrice = models.DecimalField(max_digits=6, decimal_places=3, blank=True)
+    BidPrice = models.DecimalField(max_digits=10, decimal_places=3, blank=True)
     BidYTM = models.DecimalField(max_digits=6, decimal_places=3, blank=True)
     BidMDuration = models.DecimalField(max_digits=5, decimal_places=2, blank=True)
 

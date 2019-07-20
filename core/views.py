@@ -6,7 +6,7 @@ from .forms import CommentForm, SearchForm, LoginForm, UploadForm
 from .models import BondIssue, Country, Currency, Comment
 
 
-RECORDS_ON_PAGE = 6 
+RECORDS_ON_PAGE = 50
 
 
 def bonds_list(request):
@@ -143,7 +143,7 @@ def handle_uploaded_file(fh):
     # outfile = open('loader_log.txt', 'w')
     
     for line in infile:
-        data = line.strip().split(";")
+        data = line.strip().split("|")
         
         # try:
         new_record = BondIssue( ISIN=data[0],
