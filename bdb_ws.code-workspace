@@ -5,6 +5,12 @@
         },
         {
             "path": "bond_db"
+        },
+        {
+            "path": "config"
+        },
+        {
+            "path": "scripts"
         }
     ],
     "settings": {
