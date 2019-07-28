@@ -10,18 +10,12 @@ DEBUG = False
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 SECRET_KEY = '0nvp)2o93(=7f$j5siuu9e$v-w^2_ho7*fpiitfyfuh(*1)v34'
 
-LOGIN_URL = '/login'
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'core',
     'django.contrib.admin',
@@ -64,11 +58,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bond_db.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -92,18 +81,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# Static files and urls
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+LOGIN_URL = '/login'
