@@ -14,15 +14,19 @@ class CommentForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     ORDER_CHOICES = (
-        ('Coupon', 'Купон'),
         ('Moody', 'Рейтинг Moody'),
+        ('Sp', 'Рейтинг S&P'),
+        ('Fitch', 'Рейтинг Fitch'),
+        ('Coupon', 'Купон'),
         ('Ticker', 'Тикер'),
         ('IssuerCompany', 'Имя эмитента'),
         ('Currency', 'Валюта'),
-    ) # Добавить все варианты
+        ('Country', 'Страна эмитента'),
+        ('Maturity', 'Дата погашения'),   
+    )
     
-    search_string = forms.CharField(max_length=25, required=True, label='Слово')
-    # Добавить поля поиска
+    search_string = forms.CharField(max_length=25, required=False, label='Имя эмитента')
+    
     ordered_by = forms.ChoiceField(choices=ORDER_CHOICES, required=False, label='Сортировать по')
     descending = forms.BooleanField(initial=True, required=False, label='По убыванию')
 

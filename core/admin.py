@@ -17,12 +17,8 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 @admin.register(BondIssue)
 class BondIssueAdmin(admin.ModelAdmin):
-    list_display = ('ISIN', 'Ticker', 'IssuerCompany',
-                    'Maturity', 'Currency', 'Coupon', 'Moody',
-    )
-    list_filter = ('ISIN', 'Ticker', 'IssuerCompany',
-                    'Maturity', 'Currency', 'Coupon', 'Moody',
-    )
+    list_display = ('ISIN', 'Ticker', 'IssuerCompany', 'Maturity', 'Currency', 'Coupon', 'Moody')
+    # list_filter = ('ISIN', 'Ticker', 'IssuerCompany', 'Maturity', 'Currency', 'Coupon', 'Moody')
     search_fields = ('ISIN', 'Ticker', 'IssuerCompany',
                     'Moody', 'Country',
     )
@@ -31,5 +27,5 @@ class BondIssueAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('name', 'record', 'created', 'active')
-    list_filter = ('active', 'created')
+    # list_filter = ('active', 'created')
     search_fields = ('name', 'email', 'body')

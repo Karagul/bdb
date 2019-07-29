@@ -7,6 +7,7 @@ class ActiveManager(models.Manager):
         return super(ActiveManager, self).get_queryset().filter(Archived=False)
 
 class Country(models.Model):
+    objects = models.Manager()
     abbr = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=100)
     class Meta:
@@ -15,6 +16,7 @@ class Country(models.Model):
         return self.abbr
 
 class Currency(models.Model):
+    objects = models.Manager()
     abbr = models.CharField(max_length=5, primary_key=True)
     name = models.CharField(max_length=30)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -69,9 +71,9 @@ class BondIssue(models.Model):
 
 class Comment(models.Model):
     record = models.ForeignKey(BondIssue, on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=50) # Привязать к user
+    name = models.CharField(max_length=50) # Возможно, потребуется привязать к user
     email = models.EmailField()
-    body = models.TextField()
+    body = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 

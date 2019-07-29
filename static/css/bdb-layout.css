@@ -1,0 +1,16 @@
+.teal {
+    background-color: #09A7A1;
+    color: white;     
+}
+
+.teal-header {
+    height: 112px;
+}
+
+div.logo-padding {
+    padding: 3px 3px 3px 3px;
+}
+
+a {
+	color: rgb(0, 0, 210);
+}

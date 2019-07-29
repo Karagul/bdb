@@ -5,15 +5,22 @@
 {% block content %}
     <table class="table table-striped table-bordered table-info">
         <thead>
-        <tr><th>Выпуск</th><th>Компания</th><th>Код</th><th>Дата погашения</th><th>Купон</th><th>Валюта</th>
+        <tr><th>Выпуск</th>
+            <th>Компания</th>
+            <th>Страна</th>
+            <th>Дата погашения</th>
+            <th>Moody's</th>
+            <th>Купон</th>
+            <th>Валюта</th>
             </tr>
         </thead>
     {% for rec in records %}
         <tr>
         <td><a href="{{ rec.get_absolute_url }}">{{ rec.ISIN }}</a></td>
         <td>{{ rec.IssuerCompany }}</td>
-        <td>{{ rec.Ticker }}</td>
+        <td>{{ rec.Country }}</td>
         <td>{{ rec.Maturity }}</td>
+        <td>{{ rec.Moody }}</td>
         <td>{{ rec.Coupon }}</td>
         <td>{{ rec.Currency }}</td>
         </tr>

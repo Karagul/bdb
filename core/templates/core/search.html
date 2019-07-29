@@ -5,37 +5,38 @@
 {% block content %}
 
     {% if search_done %}
-        <h5>Поиск</h5>
-        <form action="search" method="get">
-            <table>
-                {{ search_form.as_table }}
-                {% csrf_token %}
-            </table>
-            <p><input class="btn btn-info" type="submit" value="Искать"></p>
-        </form>
-
+        <h5>Результаты:</h5>
+        <a class="nav-link" href="search">Повторить поиск</a>
         <table class="table table-striped table-bordered table-info">
                 <thead>
-                <tr><th>Выпуск</th><th>Компания</th><th>Код</th><th>Дата погашения</th><th>Купон</th><th>Валюта</th>
-                    </tr>
+                <tr>
+                    <th>Выпуск</th>
+                    <th>Компания</th>
+                    <th>Страна</th>
+                    <th>Дата погашения</th>
+                    <th>Moody's</th>
+                    <th>Купон</th>
+                    <th>Валюта</th>
+                </tr>
                 </thead>
         {% for res in search_results %}
-		<tr>
+		    <tr>
                 <td><a href="{{ res.get_absolute_url }}">{{ res.ISIN }}</a></td>
                 <td>{{ res.IssuerCompany }}</td>
-                <td>{{ res.Ticker }}</td>
+                <td>{{ res.Country }}</td>
                 <td>{{ res.Maturity }}</td>
+                <td>{{ res.Moody }}</td>
                 <td>{{ res.Coupon }}</td>
                 <td>{{ res.Currency }}</td>
-                </tr>
+            </tr>
 
         {% empty %}
         <h5>Не найдено</h5>
         {% endfor %}
      </table>
      
-     {% include "pagination.html" with  page=search_results search_string=search_string ordered_by=ordered_by descending=descending %}
-     
+    {% include "pagination.html" with page=search_results search_parameters=search_params %}
+    <p><a class="nav-link" href="search">Повторить поиск</a></p>
     {% else %}
         <h5>Поиск</h5>
         <form action="search" method="get">
@@ -43,6 +44,38 @@
                 {{ search_form.as_table }}
                 {% csrf_token %}
             </table>
+            
+            <div><span><label for="maturity_start" class="mr-sm-2">Срок погашения, не ранее:</label>
+                    <input  class="mr-sm-2" type="date" name="maturity_start" min="2020-01-01" max="2120-01-01" value="2020-01-01"></span>
+                <span><label class="mr-sm-2" for="maturity_end">Срок погашения, не позднее:</label>
+                    <input  class="mr-sm-2" type="date" name="maturity_end" min="2020-01-01" max="2120-01-01" value="2120-01-01"></span>
+            </div>
+            <div>
+                <span><label for="coupon_min" class="mr-sm-2">С купоном не менее:</label><input class="mr-sm-2" type="number" name="coupon_min" min="0" value="0" step="0.01">%</span>
+                <span><label for="coupon_max" class="mr-sm-2">С купоном не более:</label><input class="mr-sm-2" type="number" name="coupon_max" value="10" step="0.01">%</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="search_currency">Валюта номинала:</label>
+                <select name="search_currency">
+                        <option value="USD" selected>USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="RUB">RUB</option>
+                        <option value="GBP">GBP</option>
+                        <option value="CNY">CNY</option>
+                        <option value="JPY">JPY</option>
+                        <option value="CAD">CAD</option>
+                        <option value="AUD">AUD/NZD</option>
+                        <option value="BRL">BRL</option>
+                        <option value="CHF">CHF</option>
+                        <option value="HKD">HKD/SGD</option>
+                        <option value="SEK">SEK/NOK</option>
+                        <option value="ARS">Латиноамериканские валюты</option>
+                        <option value="ITL">Европейские валюты до евро</option>
+                        <option value="KRW">KRW/TRY/INR/ZAR/etc</option>                        
+                </select> 
+            </div>
+               
             <p><input class="btn btn-info" type="submit" value="Искать"></p>
         </form>
     {% endif %}

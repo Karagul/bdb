@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
@@ -6,9 +7,11 @@ from .forms import CommentForm, SearchForm, LoginForm, UploadForm
 from .models import BondIssue, Country, Currency, Comment
 
 
-RECORDS_ON_PAGE = 50
+RECORDS_ON_PAGE = 25
 
 
+###### Представления, связанные с выпусками
+# Список
 def bonds_list(request):
     records = BondIssue.active.all()
 
@@ -23,7 +26,7 @@ def bonds_list(request):
 
     return render(request, 'core/list.html', {'records': records, 'page': page})
 
-
+# Индивидуальный выпуск и комментарии к нему
 def bonds_detail(request, isin):
     record = get_object_or_404(BondIssue, ISIN=isin)
     comments = record.comments.filter(active=True) # использует related field 'comments'
@@ -32,30 +35,66 @@ def bonds_detail(request, isin):
 
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            # Добавить привязку к user, чтобы не приходилось вводить имя
+        if comment_form.is_valid() and comment_form.cleaned_data['body']:
             new_comment = comment_form.save(commit=False)
             new_comment.record = record
             new_comment.save()
-            comment_form = CommentForm()
+            
+            # Привязка к user, автоматически подставляющая имя
+            comment_form = CommentForm(data={'name': request.user.username, 
+                                         'email': request.user.email or request.user.username + "@mail.com"})
     else:
-        comment_form = CommentForm()
+        # Привязка к user, автоматически подставляющая имя
+        comment_form = CommentForm(data={'name': request.user.username, 
+                                         'email': request.user.email or request.user.username + "@mail.com"})
 
     return render(request, 'core/detail.html', {'record': record,
                                                 'comments': comments,
                                                 'new_comment': new_comment,
                                                 'comment_form': comment_form })
 
+# Поиск выпусков
 def bonds_search(request):
-    search_string = request.GET.get('search_string')
-    ordered_by = request.GET.get('ordered_by')
-    descending = request.GET.get('descending')
+    search_params = {'search_string': request.GET.get('search_string'),
+                    'ordered_by': request.GET.get('ordered_by'),
+                    'descending': request.GET.get('descending'),
+                    'maturity_start': request.GET.get('maturity_start'),
+                    'maturity_end': request.GET.get('maturity_end'),
+                    'coupon_min': request.GET.get('coupon_min'),
+                    'coupon_max': request.GET.get('coupon_max'),
+                    'search_currency': request.GET.get('search_currency'),
+                    }
     
-    if search_string:
+    if search_params['search_string'] or search_params['maturity_end']:
+
+        # Группы валют
+        if search_params['search_currency'] == "AUD":
+            currency_group = ('AUD', 'NZD')
+        elif search_params['search_currency'] == "HKD":
+            currency_group = ('HKD', 'SGD')
+        elif search_params['search_currency'] == "SEK":
+            currency_group = ('SEK', 'NOK')
+        elif search_params['search_currency'] == "ARS":
+            currency_group = ('ARS', 'CLP', 'COP', 'MXN', 'PEN', 'PHP', 'UYU')
+        elif search_params['search_currency'] == "ITL":
+            currency_group = ('DEM', 'FRF', 'CZK', 'HRK', 'HUF', 'PLN', 'RON', 'ITL', 'SKK')
+        elif search_params['search_currency'] == "KRW":
+            currency_group = ('KRW', 'INR', 'MYR', 'IDR', 'GEL', 'KZT', 'TWD', 'TRY', 'ZAR')
+        else:
+            currency_group = (search_params['search_currency'],)
         
+        # Группы рейтинга
+            
+        # Фильтрация выдачи поиска
         search_results = BondIssue.active.filter(
-            IssuerCompany__icontains=search_string).order_by('-'*int(descending=='on') + ordered_by)
-        search_form = SearchForm()
+            IssuerCompany__icontains=search_params['search_string']            
+        ).filter(
+            Maturity__range=(search_params['maturity_start'], search_params['maturity_end'])
+        ).filter(
+            Coupon__range=(search_params['coupon_min'], search_params['coupon_max'])
+        ).filter(
+            Currency__in=currency_group
+        ).order_by('-'*int(search_params['descending']=='on') + search_params['ordered_by'])
 
         paginator = Paginator(search_results, RECORDS_ON_PAGE) # Число записей на странице
         page = request.GET.get('page')
@@ -65,24 +104,24 @@ def bonds_search(request):
             search_results = paginator.page(1)
         except EmptyPage:
             search_results = paginator.page(paginator.num_pages)
-        search_done = True    
-        
+        search_done = True
+        search_form = SearchForm()
 
     else: # Если поиск не запускался
         search_form = SearchForm()
         search_done = search_results = page = None
-        search_string = None
+        search_params = {}
 
     return render(request, 'core/search.html', {'search_form': search_form,
-                                                'search_string': search_string,
                                                 'search_done': search_done,
                                                 'search_results': search_results,
                                                 'page': page,
-                                                'ordered_by': ordered_by,
-                                                'descending': descending,
+                                                'search_params': search_params,
                                                 })
 
 
+##### Представления, связанные с авторизацией
+# Логин
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -107,11 +146,14 @@ def user_login(request):
         logged_status = None
     return render(request, 'core/login.html', {'form': form, 'logged_status': logged_status})
 
+# Логаут
 def user_logout(request):
     logout(request)
     return redirect('/')
 
 
+##### Представления, связанные с загрузчиком
+# Фронт загрузчика
 def data_loader(request):
     if request.method == 'POST':
         upload_form = UploadForm(request.POST, request.FILES)
@@ -130,8 +172,8 @@ def data_loader(request):
         file_uploaded = False
         return render(request, 'core/loader.html', {'upload_form': upload_form, 'file_uploaded': file_uploaded})
 
+# Бэк загрузчика
 def handle_uploaded_file(fh):
-    # Временный файл
     with open('temporary_upload.csv', 'wb+') as destination:
         for chunk in fh.chunks():
             destination.write(chunk)
@@ -177,7 +219,22 @@ def handle_uploaded_file(fh):
         #    return False
 
     infile.close()
-    # Удалить временный
+    os.remove('temporary_upload.csv')
     # outfile.close()
-
     return True
+
+
+##### Представления, связанные со статьями
+# Список статей
+# Индивидуальная статья
+
+
+
+
+
+
+
+
+##### Представления, связанные с новостями
+# Список новостей
+# Индивидуальная новость
