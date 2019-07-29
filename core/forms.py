@@ -22,7 +22,7 @@ class SearchForm(forms.Form):
         ('IssuerCompany', 'Имя эмитента'),
         ('Currency', 'Валюта'),
         ('Country', 'Страна эмитента'),
-        ('Maturity', 'Дата погашения'),   
+        ('Maturity', 'Дата погашения'),
     )
     
     search_string = forms.CharField(max_length=25, required=False, label='Имя эмитента')

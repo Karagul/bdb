@@ -1,12 +1,12 @@
 
 {% if page.has_previous %}
-    <a href="?page={{ page.previous_page_number }}&search_string={{ search_parameters.search_string }}&ordered_by={{ search_parameters.ordered_by }}&descending={{ search_parameters.descending }}&maturity_start={{ search_parameters.maturity_start }}&maturity_end={{ search_parameters.maturity_end }}&coupon_min={{ search_parameters.coupon_min }}&coupon_max={{ search_parameters.coupon_max }}&search_currency={{ search_parameters.search_currency }}">Предыдущие выпуски</a>
+    <a href="?page={{ page.previous_page_number }}&records_on_page={{ search_parameters.records_on_page }}&search_string={{ search_parameters.search_string }}&ordered_by={{ search_parameters.ordered_by }}&descending={{ search_parameters.descending }}&maturity_start={{ search_parameters.maturity_start }}&maturity_end={{ search_parameters.maturity_end }}&coupon_min={{ search_parameters.coupon_min }}&coupon_max={{ search_parameters.coupon_max }}&search_currency={{ search_parameters.search_currency }}&rating_min={{ search_parameters.rating_min }}&rating_max={{ search_parameters.rating_max }}">Предыдущие выпуски</a>
     {% csrf_token %}
 {% endif %}
 
 Страница {{ page.number }} из {{ page.paginator.num_pages }}.
 
 {% if page.has_next %}
-    <a href="?page={{ page.next_page_number }}&search_string={{ search_parameters.search_string }}&ordered_by={{ search_parameters.ordered_by }}&descending={{ search_parameters.descending }}&maturity_start={{ search_parameters.maturity_start }}&maturity_end={{ search_parameters.maturity_end }}&coupon_min={{ search_parameters.coupon_min }}&coupon_max={{ search_parameters.coupon_max }}&search_currency={{ search_parameters.search_currency }}">Следующие выпуски</a>
+    <a href="?page={{ page.next_page_number }}&records_on_page={{ search_parameters.records_on_page }}&search_string={{ search_parameters.search_string }}&ordered_by={{ search_parameters.ordered_by }}&descending={{ search_parameters.descending }}&maturity_start={{ search_parameters.maturity_start }}&maturity_end={{ search_parameters.maturity_end }}&coupon_min={{ search_parameters.coupon_min }}&coupon_max={{ search_parameters.coupon_max }}&search_currency={{ search_parameters.search_currency }}&rating_min={{ search_parameters.rating_min }}&rating_max={{ search_parameters.rating_max }}">Следующие выпуски</a>
     {% csrf_token %}
 {% endif %}

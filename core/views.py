@@ -7,12 +7,15 @@ from .forms import CommentForm, SearchForm, LoginForm, UploadForm
 from .models import BondIssue, Country, Currency, Comment
 
 
-RECORDS_ON_PAGE = 25
-
+DEFAULT_RECORDS_ON_PAGE = 25
+MOODY_RATINGS_RANKS = ('Aaa', 'Aa1', 'Aa2', 'Aa3', 'A1', 'A2', 'A3', 
+                        'Baa1', 'Baa2', 'Baa3', 'Ba1', 'Ba2', 'Ba3', 'B1', 'B2', 'B3',
+                        'Caa1', 'Caa2', 'Caa3', 'Ca', 'C')
 
 ###### Представления, связанные с выпусками
 # Список
 def bonds_list(request):
+    RECORDS_ON_PAGE = request.GET.get('records_on_page') or DEFAULT_RECORDS_ON_PAGE
     records = BondIssue.active.all()
 
     paginator = Paginator(records, RECORDS_ON_PAGE) # Число записей на странице
@@ -40,13 +43,16 @@ def bonds_detail(request, isin):
             new_comment.record = record
             new_comment.save()
             
-            # Привязка к user, автоматически подставляющая имя
-            comment_form = CommentForm(data={'name': request.user.username, 
-                                         'email': request.user.email or request.user.username + "@mail.com"})
+            # Привязка к user, автоматически подставляющая имя и почту
+            comment_form = CommentForm(data={'name': request.user.username,
+                                            'email': request.user.email or request.user.username + "@mail.com"})
     else:
-        # Привязка к user, автоматически подставляющая имя
-        comment_form = CommentForm(data={'name': request.user.username, 
-                                         'email': request.user.email or request.user.username + "@mail.com"})
+        # Привязка к user, автоматически подставляющая имя и почту
+        if request.user.is_authenticated:
+            comment_form = CommentForm(data={'name': request.user.username,
+                                             'email': request.user.email or request.user.username + "@mail.com"})
+        else:
+            comment_form = CommentForm()
 
     return render(request, 'core/detail.html', {'record': record,
                                                 'comments': comments,
@@ -63,8 +69,13 @@ def bonds_search(request):
                     'coupon_min': request.GET.get('coupon_min'),
                     'coupon_max': request.GET.get('coupon_max'),
                     'search_currency': request.GET.get('search_currency'),
+                    'rating_min': request.GET.get('rating_min'),
+                    'rating_max': request.GET.get('rating_max'),
+                    'records_on_page': request.GET.get('records_on_page')
                     }
+    RECORDS_ON_PAGE = search_params['records_on_page'] or DEFAULT_RECORDS_ON_PAGE
     
+    # Если поиск запускался
     if search_params['search_string'] or search_params['maturity_end']:
 
         # Группы валют
@@ -84,6 +95,12 @@ def bonds_search(request):
             currency_group = (search_params['search_currency'],)
         
         # Группы рейтинга
+        min_index = MOODY_RATINGS_RANKS.index(search_params['rating_min'])
+        max_index = MOODY_RATINGS_RANKS.index(search_params['rating_max'])
+        ratings_group = list(MOODY_RATINGS_RANKS[max_index:min_index+1])
+        for rtng in tuple(ratings_group):
+            ratings_group.append(rtng+" *-")
+            ratings_group.append(rtng+" *+")
             
         # Фильтрация выдачи поиска
         search_results = BondIssue.active.filter(
@@ -94,6 +111,8 @@ def bonds_search(request):
             Coupon__range=(search_params['coupon_min'], search_params['coupon_max'])
         ).filter(
             Currency__in=currency_group
+        ).filter(
+            Moody__in=ratings_group
         ).order_by('-'*int(search_params['descending']=='on') + search_params['ordered_by'])
 
         paginator = Paginator(search_results, RECORDS_ON_PAGE) # Число записей на странице
