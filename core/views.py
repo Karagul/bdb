@@ -11,6 +11,11 @@ DEFAULT_RECORDS_ON_PAGE = 25
 MOODY_RATINGS_RANKS = ('Aaa', 'Aa1', 'Aa2', 'Aa3', 'A1', 'A2', 'A3', 
                         'Baa1', 'Baa2', 'Baa3', 'Ba1', 'Ba2', 'Ba3', 'B1', 'B2', 'B3',
                         'Caa1', 'Caa2', 'Caa3', 'Ca', 'C')
+ALL_CURRENCIES = ('USD', 'EUR', 'AUD', 'NZD', 'CAD', 'BRL', 'CHF', 'CNY', 'GBP', 'JPY', 'RUB', 
+                    'DEM', 'FRF', 'CZK', 'HRK', 'HUF', 'PLN', 'RON', 'ITL', 'SKK', 'KRW', 'INR', 
+                    'MYR', 'IDR', 'GEL', 'KZT', 'TWD', 'TRY', 'ZAR', 'ARS', 'CLP', 'COP', 'MXN', 
+                    'PEN', 'PHP', 'UYU', 'SEK', 'NOK', 'HKD', 'SGD')
+
 
 ###### Представления, связанные с выпусками
 # Список
@@ -69,6 +74,7 @@ def bonds_search(request):
                     'coupon_min': request.GET.get('coupon_min'),
                     'coupon_max': request.GET.get('coupon_max'),
                     'search_currency': request.GET.get('search_currency'),
+                    'search_country': request.GET.get('search_country'),
                     'rating_min': request.GET.get('rating_min'),
                     'rating_max': request.GET.get('rating_max'),
                     'records_on_page': request.GET.get('records_on_page')
@@ -91,9 +97,11 @@ def bonds_search(request):
             currency_group = ('DEM', 'FRF', 'CZK', 'HRK', 'HUF', 'PLN', 'RON', 'ITL', 'SKK')
         elif search_params['search_currency'] == "KRW":
             currency_group = ('KRW', 'INR', 'MYR', 'IDR', 'GEL', 'KZT', 'TWD', 'TRY', 'ZAR')
-        else:
+        elif search_params['search_currency']:
             currency_group = (search_params['search_currency'],)
-        
+        else:
+            currency_group = ALL_CURRENCIES
+                
         # Группы рейтинга
         min_index = MOODY_RATINGS_RANKS.index(search_params['rating_min'])
         max_index = MOODY_RATINGS_RANKS.index(search_params['rating_max'])
@@ -114,6 +122,10 @@ def bonds_search(request):
         ).filter(
             Moody__in=ratings_group
         ).order_by('-'*int(search_params['descending']=='on') + search_params['ordered_by'])
+        
+        # Фильтрация по стране - вариант
+        if search_params['search_country']:
+            search_results = search_results.filter(Country__exact=search_params['search_country'])
 
         paginator = Paginator(search_results, RECORDS_ON_PAGE) # Число записей на странице
         page = request.GET.get('page')
@@ -245,8 +257,12 @@ def handle_uploaded_file(fh):
 
 ##### Представления, связанные со статьями
 # Список статей
-# Индивидуальная статья
+def articles_list(request):
+    pass
 
+# Индивидуальная статья
+def articles_detail(request):
+    pass
 
 
 

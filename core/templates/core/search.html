@@ -57,24 +57,32 @@
             </div>
             
             <div>
-                <label for="search_currency">Валюта номинала:</label>
-                <select name="search_currency">
+                <span><label for="search_currency" class="mr-sm-2">Валюта номинала:</label>
+                <select class="mr-sm-2" name="search_currency">
+                        <option value="">Любая</option>
                         <option value="USD" selected>USD</option>
+                        <option value="CAD">CAD</option>
                         <option value="EUR">EUR</option>
                         <option value="RUB">RUB</option>
                         <option value="GBP">GBP</option>
+                        <option value="CHF">CHF</option>
+                        <option value="SEK">SEK/NOK</option>
+                        <option value="ITL">Другие европейские валюты</option>
                         <option value="CNY">CNY</option>
                         <option value="JPY">JPY</option>
-                        <option value="CAD">CAD</option>
                         <option value="AUD">AUD/NZD</option>
-                        <option value="BRL">BRL</option>
-                        <option value="CHF">CHF</option>
                         <option value="HKD">HKD/SGD</option>
-                        <option value="SEK">SEK/NOK</option>
-                        <option value="ARS">Латиноамериканские валюты</option>
-                        <option value="ITL">Европейские валюты до евро</option>
-                        <option value="KRW">KRW/TRY/INR/ZAR/etc</option>                        
-                </select> 
+                        <option value="KRW">KRW/TRY/INR/ZAR/etc</option> 
+                        <option value="BRL">BRL</option>
+                        <option value="ARS">Валюты Латинской Америки</option>                                        
+                </select></span>
+                <span><label for="search_country" class="mr-sm-2">Страна эмитента:</label>
+                    <select class="mr-sm-2" name="search_country">
+                            <option value="" selected>Любая</option>
+                            <option value="US">Только США</option>
+                            <option value="CN">Только Китай</option>
+                            <option value="RU">Только Россия</option>
+                    </select></span>
             </div>
             
             <div>
@@ -133,7 +141,7 @@
             </div>
              
             <div>
-                <label for="records_on_page" class="mr-sm-2">Записей на странице:</label><input class="mr-sm-2" type="number" name="records_on_page" min="10" max="1000" value="30" step="5">
+                <label for="records_on_page" class="mr-sm-2">Записей на странице:</label><input class="mr-sm-2" type="number" name="records_on_page" min="10" max="1000" value="25" step="5">
             </div>
             
             <p><input class="btn btn-info" type="submit" value="Искать"></p>
