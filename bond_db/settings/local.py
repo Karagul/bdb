@@ -10,7 +10,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bonds_db',
         'USER': 'analyst',
-        'PASSWORD': 'downdown',
+        'PASSWORD': 'fakepassword',
         'HOST': 'localhost',
         'PORT': '5432',
     }
